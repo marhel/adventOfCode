@@ -1,0 +1,6 @@
+[package]
+name = "aoc62"
+version = "0.1.0"
+authors = ["Martin Hellspong <martin.hellspong@factor10.com>"]
+
+[dependencies]
