@@ -1,12 +1,19 @@
 package adventOfCode
 
-data class Spiral(val start: Int, val end: Int, val side: Int, val offset: Int)
+data class Spiral(val num: Int) {
+    val side: Int = Math.ceil(Math.sqrt(num.toDouble())).toInt() / 2 * 2 + 1
+    val offset: Int = (side - 1) / 2 - 1
+    val start: Int = (side - 2) * (side - 2) + 1
+    val horiz = Math.abs(((num - start) % (side - 1)) - offset)
+    val distance: Int = offset + 1 + horiz
 
-fun squares(max: Int): Int {
-    return (listOf(0, 0) + (3..(Math.sqrt(max.toDouble()).toInt()+1) step 2).map {side -> Spiral((side-2) * (side-2) + 1, side*side, side, (side-1) / 2 - 1) }.flatMap{ s ->
-        val offsets = ((1..s.offset).reversed() + (0..s.offset+1)).toIntArray()
-        (s.start..s.end).map  { k ->
-            s.offset+1 + offsets[(k-s.start) % offsets.size]
-        }
-    })[max]
+    override fun toString(): String {
+        return String.format("%d: %d %d %d %d-%d = %d\n", num, side, offset, horiz, start, end, distance)
+    }
+
+    val end: Int = side * side
 }
+
+fun g() = (2..50).map { i -> Spiral(i) }
+
+fun spiral(max: Int): Pair<Int, Int> = Pair(max, Spiral(max).distance)
