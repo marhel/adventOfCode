@@ -1,5 +1,3 @@
-module AoC9 where
-
 import Criterion.Main
 import Test.Hspec
 import Data.Char
