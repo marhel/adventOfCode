@@ -1,5 +1,6 @@
 module AoC9 where
 
+import Criterion.Main
 import Test.Hspec
 import Data.Char
 
@@ -19,8 +20,14 @@ accepts (Normal score x) _ = score
 process :: String -> Int
 process = accepts (Normal 0 1)
 
-main :: IO ()
-main = hspec $ do
+main = do
+    text <- readFile "input.txt"
+    defaultMain
+        [ bench "aoc91" $ whnf process text
+        ]
+
+test :: IO ()
+test = hspec $ do
   describe "Day 9: Stream Processing" $ do
     it "can parse a single group" $ do
         process "{}" `shouldBe` (1 :: Int) -- [1]
