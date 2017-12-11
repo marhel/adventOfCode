@@ -5,7 +5,7 @@ data class Point(val col: Int, val row: Int) {
         val ns = mutableListOf<Point>()
         for (colOffset in (-1..1)) {
             (-1..1)
-                    .filter { colOffset != 0 || it != 0 }
+                    //.filter { colOffset != 0 || it != 0 } // remove self
                     .mapTo(ns) { Point(col + colOffset, row + it) }
         }
         return ns
@@ -34,34 +34,18 @@ data class Spiral(val num: Int) {
     val distance: Int = offset + 1 + horiz
     val col: Int = when {
         num < 2 -> 0
-        index < side - 1 -> {
-            print("#c1"); offset + 1
-        }
-        index < (side - 1) * 2 -> {
-            print("#c2"); (side - 1) * 2 - index - side / 2 - 1
-        }
-        index < (side - 1) * 3 -> {
-            print("#c3"); -(offset + 1)
-        }
-        index <= side * side -> {
-            print("#c4"); index - (side - 1) * 3 - side / 2 + 1
-        }
+        index < side - 1 -> offset + 1
+        index < (side - 1) * 2 -> (side - 1) * 2 - index - side / 2 - 1
+        index < (side - 1) * 3 -> -(offset + 1)
+        index <= side * side -> index - (side - 1) * 3 - side / 2 + 1
         else -> -9999
     }
     val row: Int = when {
         num < 2 -> 0
-        index < side - 1 -> {
-            print("#r1"); index - side / 2 + 1
-        }
-        index < (side - 1) * 2 -> {
-            print("#r2"); offset + 1
-        }
-        index < (side - 1) * 3 -> {
-            print("#r3"); (side - 1) * 3 - index - side / 2 - 1
-        }
-        index <= side * side -> {
-            print("#r4"); -(offset + 1)
-        }
+        index < side - 1 -> index - side / 2 + 1
+        index < (side - 1) * 2 -> offset + 1
+        index < (side - 1) * 3 -> (side - 1) * 3 - index - side / 2 - 1
+        index <= side * side -> -(offset + 1)
         else -> -9999
     }
     val coord: Point = Point(col, row)
@@ -72,18 +56,14 @@ data class Spiral(val num: Int) {
     val end: Int = side * side
 }
 
-fun aoc32() {
+fun aoc32(): Sequence<Int> {
     val grid = mutableMapOf(Pair(Point(0, 0), 1))
-    var lastScore = 0
-    var index = 2
-    while (lastScore < 312051) {
-        val spiral = Spiral(index++)
-        lastScore = spiral.coord.neighbors().fold(0, { acc, point -> grid.getOrDefault(point, 0) })
-        grid.put(spiral.coord, lastScore)
+    return generateSequence(1) { it + 1 }.map {
+        val spiral = Spiral(it)
+        val score = spiral.coord.neighbors().fold(0, { acc, point -> acc + grid.getOrDefault(point, 0) })
+        // print("${spiral.num} @ ${spiral.coord} -> $score\n")
+        grid.put(spiral.coord, score)
+        score
     }
-    return lastScore
-}
-
-fun spiral(max: Int): Pair<Int, Int> = Pair(max, Spiral(max).distance)
 }
 

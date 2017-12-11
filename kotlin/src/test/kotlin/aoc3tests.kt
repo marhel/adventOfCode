@@ -8,8 +8,6 @@ import io.kotlintest.properties.row
 import io.kotlintest.properties.table
 import io.kotlintest.specs.StringSpec
 
-val answers = listOf(1, 1, 2, 4, 5, 10, 11, 23, 25, 26, 54, 57, 59, 122, 133, 142, 147, 304, 330, 351, 362, 747, 806)
-
 class SpiralTests : StringSpec() {
     var banks2hot = arrayOf(14, 0, 15, 12, 11, 11, 3, 5, 1, 6, 8, 4, 9, 1, 8, 4)
 
@@ -94,5 +92,15 @@ class SpiralTests : StringSpec() {
                 Spiral(pos).coord.row shouldBe(row)
             }
         })
+
+        "aoc 3.2 matches examples" {
+            val answers = listOf(1, 1, 2, 4, 5, 10, 11, 23, 25, 26, 54, 57, 59, 122, 133, 142, 147, 304, 330, 351, 362, 747, 806)
+            // (2..25).map { Spiral(it) } should be
+            aoc32().take(answers.size).toList() shouldBe(answers)
+        }
+
+        "aoc 3.2 can generate the answer" {
+            aoc32().dropWhile { it < 312051 }.first() shouldBe(312453)
+        }
     }
 }
