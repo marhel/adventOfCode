@@ -3,7 +3,7 @@ import Test.Hspec
 import Data.Char
 import Data.List.Split
 
-data Coord = Axial Int Int | Cubic Int Int Int
+data Coord = Axial Int Int | Cubic Int Int Int deriving (Eq, Show)
 
 twist :: Coord -> Coord
 twist (Axial q r) = Cubic q r ((-q) - r)
@@ -35,14 +35,6 @@ main = do
         [ bench "aoc11.2" $ whnf maxWalkDistance text
         , bench "aoc11.1" $ whnf walkDistance text
         ]
-
-instance Show (Coord) where
-   show (Axial q r) = "Axial " ++ show q ++ " " ++ show r
-   show (Cubic x z y) = "Cubic " ++ show x ++ " " ++ show z ++ " " ++ show y
-
-instance Eq Coord where
-  Axial q1 r1 == Axial q2 r2 = q1 == q2 && r1 == r2
-  Cubic x1 z1 y1 == Cubic x2 z2 y2 = x1 == x2 && z1 == z2 && y1 == y2
 
 test :: IO ()
 test = hspec $ do
