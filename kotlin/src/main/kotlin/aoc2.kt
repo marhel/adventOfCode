@@ -33,7 +33,29 @@ fun checksum(blk: String): Int {
             }
             .sum()
 }
-
+fun checksum2(blk: String): Int {
+    return blk
+            .split("\n")
+            .map {
+                it
+                        .split(Pattern.compile("\\s+"))
+                        .map { it.toInt() }
+                        .sorted()
+                        .reversed()
+            }
+            .flatMap { row ->
+                print("\nrow $row")
+                row.withIndex().mapNotNull { cell ->
+                    val other = row.drop(cell.index + 1).find { cell.value % it == 0 }
+                    if (other != null) {
+                        print(", cell ${cell.value} has $other")
+                        Pair(cell.value, other)
+                    } else
+                        null
+                }.map { it.first / it.second }
+            }
+            .sum()
+}
 fun main(args: Array<String>) {
     checksum(spreadsheet)
 }
