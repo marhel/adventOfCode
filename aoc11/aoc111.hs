@@ -40,23 +40,23 @@ test :: IO ()
 test = hspec $ do
   describe "Day 11: Hex Ed" $ do
     it "can step north" $ do
-        step (Axial 0 0) "n" `shouldBe` (Axial 0 (-1))
+        step (Axial 0 0) "n" `shouldBe` Axial 0 (-1)
     it "can step northeast" $ do
-        step (Axial 0 0) "ne" `shouldBe` (Axial 1 (-1))
+        step (Axial 0 0) "ne" `shouldBe` Axial 1 (-1)
     it "can step northwest" $ do
-        step (Axial 0 0) "nw" `shouldBe` (Axial (-1) 0)
+        step (Axial 0 0) "nw" `shouldBe` Axial (-1) 0
     it "can step south" $ do
-        step (Axial 0 0) "s" `shouldBe` (Axial 0 1)
+        step (Axial 0 0) "s" `shouldBe` Axial 0 1
     it "can step southeast" $ do
-        step (Axial 0 0) "se" `shouldBe` (Axial 1 0)
+        step (Axial 0 0) "se" `shouldBe` Axial 1 0
     it "can step southwest" $ do
-        step (Axial 0 0) "sw" `shouldBe` (Axial (-1) 1)
+        step (Axial 0 0) "sw" `shouldBe` Axial (-1) 1
     it "can split a string on comma" $ do
-        splitOn "," "se,sw,se,sw,sw" `shouldBe` (["se", "sw", "se", "sw", "sw"])
+        splitOn "," "se,sw,se,sw,sw" `shouldBe` ["se", "sw", "se", "sw", "sw"]
     it "can twist from Cubic coords" $ do
-        twist (Cubic 2 3 (-5)) `shouldBe` (Axial 2 3)
+        twist (Cubic 2 3 (-5)) `shouldBe` Axial 2 3
     it "can twist from Axial coords" $ do
-        twist (Axial 2 3) `shouldBe` (Cubic 2 3 (-5))
+        twist (Axial 2 3) `shouldBe` Cubic 2 3 (-5)
     it "can calculate distance from starting point" $ do
         walkDistance "se,sw,se,sw,sw" `shouldBe` (3 :: Int)
         walkDistance "ne,ne,s,s" `shouldBe` (2 :: Int)
