@@ -16,17 +16,25 @@ func connectsTo(node string, programs map[string][]string, seen map[string]bool)
 	elem, ok := programs[node]
 	sum := 1
 	seen[node] = true
+	delete(programs, node)
 
 	if ok {
 		for _, child := range elem {
 			if !seen[child] {
-                fmt.Printf("Node %s is connected to %s\n", node, child)
+				fmt.Printf("Node %s is connected to %s\n", node, child)
 				sum += connectsTo(child, programs, seen)
 			}
 		}
 	}
 
 	return sum
+}
+
+func first_key(programs map[string][]string) string {
+	for key, _ := range programs {
+		return key
+	}
+	panic("shouldn't get here")
 }
 
 func main() {
@@ -38,7 +46,7 @@ func main() {
 	lines := strings.Split(string(dat), "\n")
 
 	for _, line := range lines {
-		fmt.Println(">>>" + line)
+		// fmt.Println(">>>" + line)
 		parts := strings.Split(line, " <-> ")
 		root, elements := parts[0], parts[1]
 		connections := strings.Split(elements, ", ")
@@ -53,27 +61,15 @@ func main() {
 		// }
 	}
 
-	fmt.Printf("Nodes %d, connectsTo 0 = %d", len(programs), connectsTo("0", programs, make(map[string]bool)))
-
-	// s := map[int]bool{5: true, 2: true}
-	// _, ok := s[6] // check for existence
-	// s[8] = true // add element
-	// delete(s, 2) // remove element
-
-	// s_union := map[int]bool{}
-	// for k, _ := range s1{
-	//     s_union[k] = true
-	// }
-	// for k, _ := range s2{
-	//     s_union[k] = true
-	// }
-	// Intersection
-
-	// s_intersection := map[int]bool{}
-	// for k,_ := range s1 {
-	//   if s2[k] {
-	//     s_intersection[k] = true
-	//   }
-	// }
-
+	seen := make(map[string]bool)
+	groups := 0
+	nodes := len(programs)
+	rootCount := connectsTo("0", programs, seen)
+	for len(seen) != nodes {
+		key := first_key(programs)
+		groups++
+		fmt.Printf("%s connectsTo %d other nodes\n", key, connectsTo(key, programs, seen))
+	}
+	fmt.Printf("Nodes %d, and group 0 had %d\n", nodes, rootCount)
+	fmt.Printf("Groups %d\n", groups)
 }
