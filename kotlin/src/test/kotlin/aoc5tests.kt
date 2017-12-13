@@ -43,7 +43,8 @@ class JumpTests : StringSpec() {
 1
 -3
 """
-            jumper(jumps) shouldBe(5)
+            jumper(jumps, ::jump) shouldBe(5)
+            jumper(jumps, ::jump2) shouldBe(10)
         }
     }
 }

@@ -1034,17 +1034,26 @@ val jumps = """2
 -393
 -979"""
 
-fun jumper(jumps: String): Int {
+fun jumper(jumps: String, fn: (Int, IntArray) -> Int ): Int {
     val table = jumps.split("\n").filter{ it.isNotEmpty() }.map { it.toInt() }.toIntArray()
     var pc = 0
     var steps = 0
     while(pc < table.size) {
         steps++
-        pc = jump(pc, table)
+        pc = fn(pc, table)
     }
     return steps
 }
 
 fun jump(pc: Int, table: IntArray): Int {
     return pc + table[pc]++
+}
+
+fun jump2(pc: Int, table: IntArray): Int {
+    return pc + if(table[pc] >= 3)
+    {
+        table[pc]--
+    } else {
+        table[pc]++
+    }
 }
