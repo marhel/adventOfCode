@@ -26,7 +26,18 @@ class SwapTests : StringSpec() {
         }
 
         "aoc10.1 real input works" {
-            aoc10((0..255).toList(), listOf(76,1,88,148,166,217,130,0,128,254,16,2,130,71,255,229)) shouldBe(0)
+            aoc10((0..255).toList(), listOf(76,1,88,148,166,217,130,0,128,254,16,2,130,71,255,229)) shouldBe(29240)
+        }
+
+        "aoc 10.2 sample input" {
+            knothash("") shouldBe ("a2582a3a0e66e6e86e3812dcb672a272")
+            knothash("AoC 2017") shouldBe ("33efeb34ea91902bb2f59c9920caa6cd")
+            knothash("1,2,3") shouldBe ("3efbe78a8d82f29979031a4aa0b16a9d")
+            knothash("1,2,4") shouldBe ("63960835bcdc130f0b66d7ff4f6a5a8e")
+        }
+        "aoc 10.2 real input" {
+            var code = "76,1,88,148,166,217,130,0,128,254,16,2,130,71,255,229"
+            knothash(code) shouldBe("4db3799145278dc9f73dcdbc680bd53d")
         }
     }
 }
