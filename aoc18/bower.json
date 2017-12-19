@@ -14,7 +14,8 @@
     "purescript-maps": "^3.6.0",
     "purescript-debug": "^3.0.0",
     "purescript-node-fs": "^4.0.0",
-    "purescript-node-fs-aff": "^5.0.0"
+    "purescript-node-fs-aff": "^5.0.0",
+    "purescript-numbers": "^5.0.0"
   },
   "devDependencies": {
     "purescript-psci-support": "^3.0.0",
