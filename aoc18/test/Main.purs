@@ -5,9 +5,9 @@ import Control.Monad.Eff (kind Effect, Eff)
 import Control.Monad.Eff.Console (CONSOLE)
 import Data.Either (Either(..))
 import Data.Array (fromFoldable)
-import Data.List (length, foldl)
-import Data.List.Types (List(..), (:))
-import Main (Instruction(..), Reg(..), Value(..), Env(..), compile, interpret, parse, eval, exec, init, init0, init1, keep)
+import Data.List (length)
+import Data.List.Types (List(..))
+import Main (Instruction(..), Reg(..), Value(..), compile, interpret, parse, eval, evalReg   , exec, init, init0, init1, keep)
 import Node.Encoding (Encoding(..))
 import Node.FS (FS)
 import Node.FS.Aff as FS
@@ -63,9 +63,10 @@ main = runTest do
       Assert.equal (Right(Rcv (Reg "z"))) (compile "rcv z")
       Assert.equal (Left "rcv z 123") (compile "rcv z 123")
     test "compile jgz" do
-      Assert.equal (Right(Jgz (Reg "a") (Literal 148))) (compile "jgz a 148")
-      Assert.equal (Right(Jgz (Reg "z") (Literal (-148)))) (compile "jgz z -148")
-      Assert.equal (Right(Jgz (Reg "b") (RegLiteral (Reg "c")))) (compile "jgz b c")
+      Assert.equal (Right(Jgz (RegLiteral (Reg "a")) (Literal 148))) (compile "jgz a 148")
+      Assert.equal (Right(Jgz (RegLiteral (Reg "z")) (Literal (-148)))) (compile "jgz z -148")
+      Assert.equal (Right(Jgz (RegLiteral (Reg "b")) (RegLiteral (Reg "c")))) (compile "jgz b c")
+      Assert.equal (Right(Jgz (Literal 1) (RegLiteral (Reg "c")))) (compile "jgz 1 c")
       Assert.equal (Left "jgz b") (compile "jgz b")
     test "compile unknown" do
       Assert.equal (Left "xxx a 148") (compile "xxx a 148")
@@ -101,10 +102,11 @@ main = runTest do
       Assert.equal (init1 []) (exec (init []) (Rcv (Reg "x")))
       Assert.equal (init1 [1,0,99,99]) (exec (init0 [1,0,99]) (Rcv (Reg "x")))
     test "exec Jgz" do
-      Assert.equal (init1 []) (exec (init []) (Jgz (Reg "x") (Literal 12)))
-      Assert.equal (init [10, 18]) (exec (init0 [18]) (Jgz (Reg "x") (Literal 10)))
-      Assert.equal (init [85, 80, 10]) (exec (init [5,80,10]) (Jgz (Reg "y") (RegLiteral (Reg "x"))))
-      Assert.equal (init1 [0, 10]) (exec (init0 [0, 10]) (Jgz (Reg "x") (RegLiteral (Reg "y"))))
+      Assert.equal (init1 []) (exec (init []) (Jgz (RegLiteral (Reg "x")) (Literal 12)))
+      Assert.equal (init [10, 18]) (exec (init0 [18]) (Jgz (RegLiteral (Reg "x")) (Literal 10)))
+      Assert.equal (init [15]) (exec (init [5]) (Jgz (Literal 1) (Literal 10)))
+      Assert.equal (init [85, 80, 10]) (exec (init [5,80,10]) (Jgz (RegLiteral (Reg "y")) (RegLiteral (Reg "x"))))
+      Assert.equal (init1 [0, 10]) (exec (init0 [0, 10]) (Jgz (RegLiteral (Reg "x")) (RegLiteral (Reg "y"))))
     test "keep" do
       Assert.equal (Cons (Snd (Reg "x")) Nil) (keep (Cons (Right (Snd (Reg "x"))) Nil))
       Assert.equal (Cons (Snd (Reg "x")) Nil) (keep (Cons (Left "oops") (Cons (Right (Snd (Reg "x"))) Nil)))
@@ -115,7 +117,9 @@ main = runTest do
     --   fileContents <- FS.readTextFile UTF8 "input.txt"
     --   Assert.equal "hello here are your file contents\n" fileContents
     test "Read simple input" do
-      fileContents <- FS.readTextFile UTF8 "input.txt"
-      Assert.equal (init1 []) (unsafePartial (interpret 0 (init0 []) $ fromFoldable $ keep $ parse fileContents))
+      fileContents <- FS.readTextFile UTF8 "simple-input.txt"
+      Assert.equal (4) (evalReg (unsafePartial (interpret 0 (init0 []) $ fromFoldable $ keep $ parse fileContents)) "rcv")
       Assert.equal 10 (length $ parse fileContents)
-      
+    test "Read real input" do
+      fileContents <- FS.readTextFile UTF8 "input.txt"
+      Assert.equal (init [0]) (unsafePartial (interpret 0 (init0 []) $ fromFoldable $ keep $ parse fileContents))

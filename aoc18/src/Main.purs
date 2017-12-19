@@ -33,7 +33,7 @@ data Instruction = Snd Reg --plays a sound with a frequency equal to the value o
     | Mul Reg Value --sets register X to the result of multiplying the value contained in register X by the value of Y.
     | Mod Reg Value --sets register X to the remainder of dividing the value contained in register X by the value of Y (that is, it sets X to the result of X modulo Y).
     | Rcv Reg --recovers the frequency of the last sound played, but only when the value of X is not zero. (If it is zero, the command does nothing.)
-    | Jgz Reg Value --jumps with an offset of the value of Y, but only if the value of X is greater than zero. (An offset of 2 skips the next instruction, an offset of -1 jumps to the previous instruction, and so on.)
+    | Jgz Value Value --jumps with an offset of the value of Y, but only if the value of X is greater than zero. (An offset of 2 skips the next instruction, an offset of -1 jumps to the previous instruction, and so on.)
     | UnknownInst String String String -- Unknown action
 
 data Env = Env Int (Map String Int)
@@ -92,12 +92,12 @@ exec e@(Env pc m) (Mod (Reg r) v) = Env (pc + 1) $ insert r (trace (r <> " = " <
     res = (a `mod` b)
 exec e@(Env pc m) (Snd (Reg r)) = Env (pc + 1) $ (trace ("snd " <> show res) \_ -> insert "snd" res) m where
     res = (evalReg e r)
-exec e@(Env pc m) (Rcv (Reg r)) | v <- (evalReg e r), v > 0 = Env (pc + 1) $ (trace ("rcv " <> show res) \_ -> insert "rcv" res) m where
+exec e@(Env pc m) (Rcv (Reg r)) | v <- (evalReg e r), v /= 0 = Env (pc + 1) $ (trace ("rcv " <> show res) \_ -> insert "rcv" res) m where
     res = (evalReg e "snd")
 exec e@(Env pc m) (Rcv (Reg r)) = Env (pc + 1) m
-exec e@(Env pc m) (Jgz (Reg r) v) | rv <- (evalReg e r), rv > 0 = Env (trace ("-- JUMP " <> show res) \_ -> (pc + res)) m where
-    res = (eval e v)
-exec e@(Env pc m) (Jgz (Reg r) v) = Env (pc + 1) m
+exec e@(Env pc m) j@(Jgz v1 v2) | rv <- (eval e v1), rv > 0 = Env (trace ("-- JUMP " <> show res <> " " <> show j) \_ -> (pc + res)) m where
+    res = (eval e v2)
+exec e@(Env pc m) (Jgz v1 v2) = Env (pc + 1) m
 exec e@(Env pc m) (UnknownInst i j k) = trace "Unknown inst" \_ -> Env (pc + 1) m
 --exec (Env pc m) i = Env (pc + 1) m
 
@@ -112,7 +112,7 @@ instruction ["mul",r,v] = Right $ triple Mul r v
 instruction ["mod",r,v] = Right $ triple Mod r v
 instruction ["snd",r] = Right $ Snd $ Reg r
 instruction ["rcv",r] = Right $ Rcv $ Reg r
-instruction ["jgz",r,v] = Right $ triple Jgz r v
+instruction ["jgz",v1,v2] = Right $ Jgz (parseValue v1) (parseValue v2)
 instruction [i,r,v] = Left $ i <> " " <> r <> " " <> v
 instruction [i,r] = Left $ i <> " " <> r
 instruction l = Left $ show l
