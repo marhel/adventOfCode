@@ -76,14 +76,27 @@ evalReg :: Env -> String -> Int
 evalReg (Env pc e) r = fromMaybe 0 $ lookup r e
 
 exec :: Env -> Instruction -> Env
-exec e@(Env pc m) (Set (Reg r) v) = Env (pc + 1) $ insert r (eval e v) m 
-exec e@(Env pc m) (Add (Reg r) v) = Env (pc + 1) $ insert r ((evalReg e r) + (eval e v)) m
-exec e@(Env pc m) (Mul (Reg r) v) = Env (pc + 1) $ insert r ((evalReg e r) * (eval e v)) m
-exec e@(Env pc m) (Mod (Reg r) v) = Env (pc + 1) $ insert r ((evalReg e r) `mod` (eval e v)) m
-exec e@(Env pc m) (Snd (Reg r)) = Env (pc + 1) $ insert "snd" (evalReg e r) m
-exec e@(Env pc m) (Rcv (Reg r)) | v <- (evalReg e r), v > 0 = Env (pc + 1) $ insert "rcv" (evalReg e "snd") m
+exec e@(Env pc m) (Set (Reg r) v) = Env (pc + 1) $ insert r (trace (r <> " = " <> show res) \_ -> res) m where
+    res = (eval e v)
+exec e@(Env pc m) (Add (Reg r) v) = Env (pc + 1) $ insert r (trace (r <> " = " <> show a <> " + " <> show b <> " = " <> show res) \_ -> res) m where
+    a = (evalReg e r)
+    b = (eval e v)
+    res = (a + b)
+exec e@(Env pc m) (Mul (Reg r) v) = Env (pc + 1) $ insert r (trace (r <> " = " <> show a <> " * " <> show b <> " = " <> show res) \_ -> res) m where
+    a = (evalReg e r)
+    b = (eval e v)
+    res = (a * b)
+exec e@(Env pc m) (Mod (Reg r) v) = Env (pc + 1) $ insert r (trace (r <> " = " <> show a <> " % " <> show b <> " = " <> show res) \_ -> res) m where
+    a = (evalReg e r)
+    b = (eval e v)
+    res = (a `mod` b)
+exec e@(Env pc m) (Snd (Reg r)) = Env (pc + 1) $ (trace ("snd " <> show res) \_ -> insert "snd" res) m where
+    res = (evalReg e r)
+exec e@(Env pc m) (Rcv (Reg r)) | v <- (evalReg e r), v > 0 = Env (pc + 1) $ (trace ("rcv " <> show res) \_ -> insert "rcv" res) m where
+    res = (evalReg e "snd")
 exec e@(Env pc m) (Rcv (Reg r)) = Env (pc + 1) m
-exec e@(Env pc m) (Jgz (Reg r) v) | rv <- (evalReg e r), rv > 0 = Env (pc + (eval e v)) m
+exec e@(Env pc m) (Jgz (Reg r) v) | rv <- (evalReg e r), rv > 0 = Env (trace ("-- JUMP " <> show res) \_ -> (pc + res)) m where
+    res = (eval e v)
 exec e@(Env pc m) (Jgz (Reg r) v) = Env (pc + 1) m
 exec e@(Env pc m) (UnknownInst i j k) = trace "Unknown inst" \_ -> Env (pc + 1) m
 --exec (Env pc m) i = Env (pc + 1) m
