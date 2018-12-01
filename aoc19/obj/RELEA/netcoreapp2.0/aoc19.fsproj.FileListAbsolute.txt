@@ -1,0 +1,8 @@
+/Users/martin/src/adventOfCode/aoc19/bin/RELEA/netcoreapp2.0/aoc19.deps.json
+/Users/martin/src/adventOfCode/aoc19/bin/RELEA/netcoreapp2.0/aoc19.runtimeconfig.json
+/Users/martin/src/adventOfCode/aoc19/bin/RELEA/netcoreapp2.0/aoc19.runtimeconfig.dev.json
+/Users/martin/src/adventOfCode/aoc19/bin/RELEA/netcoreapp2.0/aoc19.dll
+/Users/martin/src/adventOfCode/aoc19/bin/RELEA/netcoreapp2.0/aoc19.pdb
+/Users/martin/src/adventOfCode/aoc19/obj/RELEA/netcoreapp2.0/aoc19.fsproj.CoreCompileInputs.cache
+/Users/martin/src/adventOfCode/aoc19/obj/RELEA/netcoreapp2.0/aoc19.dll
+/Users/martin/src/adventOfCode/aoc19/obj/RELEA/netcoreapp2.0/aoc19.pdb
