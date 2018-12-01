@@ -13,12 +13,13 @@
   [numbers]
   (reduce + numbers))
 
-(defn first-duplicate [coll]
-  (reduce (fn [seen x]
-            (if (contains? seen x)
+(defn already-seen [seen x]
+    (if (contains? seen x)
               (reduced x)
               (conj seen x)))
-          #{0} coll))
+
+(defn first-duplicate [coll]
+  (reduce already-seen #{0} coll))
 
 (defn aoc2
   "I do a whole lot."
