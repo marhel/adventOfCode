@@ -8,7 +8,7 @@
 (defn to-numbers [strs]
     (map #(Integer/parseInt %) strs))
 
-(defn aoc1
+(defn part1
   "I don't do a whole lot."
   [numbers]
   (reduce + numbers))
@@ -21,7 +21,7 @@
 (defn first-duplicate [coll]
   (reduce already-seen #{0} coll))
 
-(defn aoc2
+(defn part2
   "I do a whole lot."
   [numbers]
   (first-duplicate (reductions + (cycle numbers))))
