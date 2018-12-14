@@ -6,6 +6,12 @@ function next_state(elves, state)
     pos, append!(state, scores)
 end
 
+function next_state_partial(elves, state)
+    scores = sum_score(state[elves])
+    pos = next_pos(elves, state[elves], length(state) + length(scores))
+    pos, append!(state, scores), scores
+end
+
 next_pos(elves, score, len) = (elves + score) .% len .+ 1
 sum_score(score) = map(v -> parse(Int, v), collect("$(sum(score))"))
 build_score(pos, state) = parse(Int, join(Iterators.take(Iterators.drop(state, pos), 10)))
@@ -32,35 +38,37 @@ end
 @test 5158916779 == build_score(9, [3,7,1,0,1,0,1,2,4,5,1,5,8,9,1,6,7,7,9,2])
 
 function score_before(recipestr::String)
-    recipe = collect(recipestr)
+    recipe = map(v -> parse(Int, v), collect(recipestr))
     state = [3, 7]
     elves = [1, 2]
     rlen = length(recipe)
     at = 0
     state_len = 0
-    while length(state) < 1000000000
-        # println(state)
-        elves, state = next_state(elves, state)
-        state_len = length(state)
-        if (t1l = state_len - rlen) >= 0
-            tail1 = join(Iterators.drop(state, t1l))
-            # println(recipestr, " ==1 ", tail1, ": ", join(state))
-            if recipestr == tail1
-                at = 0
-                break
-            end
+    count = 0
+    rolling_tail = Int[]
+    found = false
+    score = []
+    while !found
+        count += 1
+        if count % 10000 == 0
+            print('*')
         end
-        if (t2l = state_len - rlen - 1) >= 0
-            tail2 = join(Iterators.take(Iterators.drop(state, t2l), rlen))
-            # println(recipestr, " ==2 ", tail2, ": ", join(state))
-            if recipestr == tail2
-                at = 1
+        # println(state)
+        elves, state, score = next_state_partial(elves, state)
+        for s in score
+            if length(rolling_tail) >= rlen
+                rolling_tail = collect(Iterators.drop(rolling_tail, 1))
+            end
+            append!(rolling_tail, s)
+            # println("rt: ", rolling_tail, " => ", recipe, " ???", recipestr, ", ", state)
+            if recipe == rolling_tail
+                found = true
                 break
             end
         end
     end
-    println(join(state))
-    state_len - at - rlen
+    println(join(rolling_tail))
+    length(state) - length(score) - rlen + 1
 end
 
 # (3)[7]
