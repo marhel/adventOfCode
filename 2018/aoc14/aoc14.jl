@@ -48,17 +48,20 @@ function score_before(recipestr::String)
     rolling_tail = Int[]
     found = false
     score = []
+    total = length(score)
     while !found
         count += 1
-        if count % 10000 == 0
+        if count % 100000 == 0
             print('*')
         end
         # println(state)
         elves, state, score = next_state_partial(elves, state)
         for s in score
-            if length(rolling_tail) >= rlen
+            if total >= rlen
+                #println(rolling_tail, ": ", total)
                 rolling_tail = collect(Iterators.drop(rolling_tail, 1))
             end
+            total += 1
             append!(rolling_tail, s)
             # println("rt: ", rolling_tail, " => ", recipe, " ???", recipestr, ", ", state)
             if recipe == rolling_tail
@@ -68,7 +71,7 @@ function score_before(recipestr::String)
         end
     end
     println(join(rolling_tail))
-    length(state) - length(score) - rlen + 1
+    total - rlen + 2
 end
 
 # (3)[7]
@@ -99,4 +102,3 @@ end
 
 part1() = score_after(846601)
 part2() = score_before("846601")
-# 9994 is too low
