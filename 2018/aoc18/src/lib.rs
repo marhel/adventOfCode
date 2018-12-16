@@ -1,6 +1,6 @@
 #[derive(Debug, PartialEq, Copy, Clone)]
 struct CPU {
-    regs[i32; 4]
+    regs: [i32; 4]
 }
 
 impl CPU {
@@ -18,12 +18,12 @@ const C: usize = 3;
 // addr (add register) stores into register C the result of adding register A and register B.
 // addi (add immediate) stores into register C the result of adding register A and value B.
 fn addr(cpu: &mut CPU, operands: [i32; 4]) -> &CPU {
-    cpu.regs[operands[C]] = cpu.regs[operands[A]] + cpu.regs[operands[B]];
+    cpu.regs[operands[C] as usize] = cpu.regs[operands[A] as usize] + cpu.regs[operands[B] as usize];
     cpu
 }
 
 fn addi(cpu: &mut CPU, operands: [i32; 4]) -> &CPU {
-    cpu.regs[operands[C]] = cpu.regs[operands[A]] + operands[B];
+    cpu.regs[operands[C] as usize] = cpu.regs[operands[A] as usize] + operands[B];
     cpu
 }
 
@@ -32,12 +32,12 @@ fn addi(cpu: &mut CPU, operands: [i32; 4]) -> &CPU {
 // mulr (multiply register) stores into register C the result of multiplying register A and register B.
 // muli (multiply immediate) stores into register C the result of multiplying register A and value B.
 fn mulr(cpu: &mut CPU, operands: [i32; 4]) -> &CPU {
-    cpu.regs[operands[C]] = cpu.regs[operands[A]] * cpu.regs[operands[B]];
+    cpu.regs[operands[C] as usize] = cpu.regs[operands[A] as usize] * cpu.regs[operands[B] as usize];
     cpu
 }
 
 fn muli(cpu: &mut CPU, operands: [i32; 4]) -> &CPU {
-    cpu.regs[operands[C]] = cpu.regs[operands[A]] * operands[B];
+    cpu.regs[operands[C] as usize] = cpu.regs[operands[A] as usize] * operands[B];
     cpu
 }
 
@@ -46,12 +46,12 @@ fn muli(cpu: &mut CPU, operands: [i32; 4]) -> &CPU {
 // banr (bitwise AND register) stores into register C the result of the bitwise AND of register A and register B.
 // bani (bitwise AND immediate) stores into register C the result of the bitwise AND of register A and value B.
 fn banr(cpu: &mut CPU, operands: [i32; 4]) -> &CPU {
-    cpu.regs[operands[C]] = cpu.regs[operands[A]] & cpu.regs[operands[B]];
+    cpu.regs[operands[C] as usize] = cpu.regs[operands[A] as usize] & cpu.regs[operands[B] as usize];
     cpu
 }
 
 fn bani(cpu: &mut CPU, operands: [i32; 4]) -> &CPU {
-    cpu.regs[operands[C]] = cpu.regs[operands[A]] & operands[B];
+    cpu.regs[operands[C] as usize] = cpu.regs[operands[A] as usize] & operands[B];
     cpu
 }
 
@@ -60,12 +60,12 @@ fn bani(cpu: &mut CPU, operands: [i32; 4]) -> &CPU {
 // borr (bitwise OR register) stores into register C the result of the bitwise OR of register A and register B.
 // bori (bitwise OR immediate) stores into register C the result of the bitwise OR of register A and value B.
 fn borr(cpu: &mut CPU, operands: [i32; 4]) -> &CPU {
-    cpu.regs[operands[C]] = cpu.regs[operands[A]] | cpu.regs[operands[B]];
+    cpu.regs[operands[C] as usize] = cpu.regs[operands[A] as usize] | cpu.regs[operands[B] as usize];
     cpu
 }
 
 fn bori(cpu: &mut CPU, operands: [i32; 4]) -> &CPU {
-    cpu.regs[operands[C]] = cpu.regs[operands[A]] | operands[B];
+    cpu.regs[operands[C] as usize] = cpu.regs[operands[A] as usize] | operands[B];
     cpu
 }
 
@@ -74,12 +74,12 @@ fn bori(cpu: &mut CPU, operands: [i32; 4]) -> &CPU {
 // setr (set register) copies the contents of register A into register C. (Input B is ignored.)
 // seti (set immediate) stores value A into register C. (Input B is ignored.)
 fn setr(cpu: &mut CPU, operands: [i32; 4]) -> &CPU {
-    cpu.regs[operands[C]] = cpu.regs[operands[A]];
+    cpu.regs[operands[C] as usize] = cpu.regs[operands[A] as usize];
     cpu
 }
 
 fn seti(cpu: &mut CPU, operands: [i32; 4]) -> &CPU {
-    cpu.regs[operands[C]] = operands[A];
+    cpu.regs[operands[C] as usize] = operands[A];
     cpu
 }
 
@@ -90,17 +90,17 @@ fn seti(cpu: &mut CPU, operands: [i32; 4]) -> &CPU {
 // gtrr (greater-than register/register) sets register C to 1 if register A is greater than register B. Otherwise, register C is set to 0.
 
 fn gtir(cpu: &mut CPU, operands: [i32; 4]) -> &CPU {
-    cpu.regs[operands[C]] = if operands[A] > cpu.regs[operands[B]] { 1 } else { 0 };
+    cpu.regs[operands[C] as usize] = if operands[A] > cpu.regs[operands[B] as usize] { 1 } else { 0 };
     cpu
 }
 
 fn gtri(cpu: &mut CPU, operands: [i32; 4]) -> &CPU {
-    cpu.regs[operands[C]] = if cpu.regs[operands[A]] > operands[B] { 1 } else { 0 };
+    cpu.regs[operands[C] as usize] = if cpu.regs[operands[A] as usize] > operands[B] { 1 } else { 0 };
     cpu
 }
 
 fn gtrr(cpu: &mut CPU, operands: [i32; 4]) -> &CPU {
-    cpu.regs[operands[C]] = if cpu.regs[operands[A]] > cpu.regs[operands[B]] { 1 } else { 0 };
+    cpu.regs[operands[C] as usize] = if cpu.regs[operands[A] as usize] > cpu.regs[operands[B] as usize] { 1 } else { 0 };
     cpu
 }
 
@@ -111,17 +111,17 @@ fn gtrr(cpu: &mut CPU, operands: [i32; 4]) -> &CPU {
 // eqrr (equal register/register) sets register C to 1 if register A is equal to register B. Otherwise, register C is set to 0.
 
 fn eqir(cpu: &mut CPU, operands: [i32; 4]) -> &CPU {
-    cpu.regs[operands[C]] = if operands[A] == cpu.regs[operands[B]] { 1 } else { 0 };
+    cpu.regs[operands[C] as usize] = if operands[A] == cpu.regs[operands[B] as usize] { 1 } else { 0 };
     cpu
 }
 
 fn eqri(cpu: &mut CPU, operands: [i32; 4]) -> &CPU {
-    cpu.regs[operands[C]] = if cpu.regs[operands[A]] == operands[B] { 1 } else { 0 };
+    cpu.regs[operands[C] as usize] = if cpu.regs[operands[A] as usize] == operands[B] { 1 } else { 0 };
     cpu
 }
 
 fn eqrr(cpu: &mut CPU, operands: [i32; 4]) -> &CPU {
-    cpu.regs[operands[C]] = if cpu.regs[operands[A]] == cpu.regs[operands[B]] { 1 } else { 0 };
+    cpu.regs[operands[C] as usize] = if cpu.regs[operands[A] as usize] == cpu.regs[operands[B] as usize] { 1 } else { 0 };
     cpu
 }
 
@@ -266,22 +266,22 @@ mod tests {
         let mut behaves = 0;
         let before = CPU::new(before);
         let after = CPU::new(after);
-        behaves += if *addr(&mut before.clone(), operands) == after { println!("as addr"); 1 } else { 0 };
-        behaves += if *addi(&mut before.clone(), operands) == after { println!("as addi"); 1 } else { 0 };
-        behaves += if *mulr(&mut before.clone(), operands) == after { println!("as mulr"); 1 } else { 0 };
-        behaves += if *muli(&mut before.clone(), operands) == after { println!("as muli"); 1 } else { 0 };
-        behaves += if *banr(&mut before.clone(), operands) == after { println!("as banr"); 1 } else { 0 };
-        behaves += if *bani(&mut before.clone(), operands) == after { println!("as bani"); 1 } else { 0 };
-        behaves += if *borr(&mut before.clone(), operands) == after { println!("as borr"); 1 } else { 0 };
-        behaves += if *bori(&mut before.clone(), operands) == after { println!("as bori"); 1 } else { 0 };
-        behaves += if *setr(&mut before.clone(), operands) == after { println!("as setr"); 1 } else { 0 };
-        behaves += if *seti(&mut before.clone(), operands) == after { println!("as seti"); 1 } else { 0 };
-        behaves += if *gtir(&mut before.clone(), operands) == after { println!("as gtir"); 1 } else { 0 };
-        behaves += if *gtri(&mut before.clone(), operands) == after { println!("as gtri"); 1 } else { 0 };
-        behaves += if *gtrr(&mut before.clone(), operands) == after { println!("as gtrr"); 1 } else { 0 };
-        behaves += if *eqir(&mut before.clone(), operands) == after { println!("as eqir"); 1 } else { 0 };
-        behaves += if *eqri(&mut before.clone(), operands) == after { println!("as eqri"); 1 } else { 0 };
-        behaves += if *eqrr(&mut before.clone(), operands) == after { println!("as eqrr"); 1 } else { 0 };
+        behaves += if *addr(&mut before.clone(), operands) == after { println!("# {} as addr", operands[0]); 1 } else { 0 };
+        behaves += if *addi(&mut before.clone(), operands) == after { println!("# {} as addi", operands[0]); 1 } else { 0 };
+        behaves += if *mulr(&mut before.clone(), operands) == after { println!("# {} as mulr", operands[0]); 1 } else { 0 };
+        behaves += if *muli(&mut before.clone(), operands) == after { println!("# {} as muli", operands[0]); 1 } else { 0 };
+        behaves += if *banr(&mut before.clone(), operands) == after { println!("# {} as banr", operands[0]); 1 } else { 0 };
+        behaves += if *bani(&mut before.clone(), operands) == after { println!("# {} as bani", operands[0]); 1 } else { 0 };
+        behaves += if *borr(&mut before.clone(), operands) == after { println!("# {} as borr", operands[0]); 1 } else { 0 };
+        behaves += if *bori(&mut before.clone(), operands) == after { println!("# {} as bori", operands[0]); 1 } else { 0 };
+        behaves += if *setr(&mut before.clone(), operands) == after { println!("# {} as setr", operands[0]); 1 } else { 0 };
+        behaves += if *seti(&mut before.clone(), operands) == after { println!("# {} as seti", operands[0]); 1 } else { 0 };
+        behaves += if *gtir(&mut before.clone(), operands) == after { println!("# {} as gtir", operands[0]); 1 } else { 0 };
+        behaves += if *gtri(&mut before.clone(), operands) == after { println!("# {} as gtri", operands[0]); 1 } else { 0 };
+        behaves += if *gtrr(&mut before.clone(), operands) == after { println!("# {} as gtrr", operands[0]); 1 } else { 0 };
+        behaves += if *eqir(&mut before.clone(), operands) == after { println!("# {} as eqir", operands[0]); 1 } else { 0 };
+        behaves += if *eqri(&mut before.clone(), operands) == after { println!("# {} as eqri", operands[0]); 1 } else { 0 };
+        behaves += if *eqrr(&mut before.clone(), operands) == after { println!("# {} as eqrr", operands[0]); 1 } else { 0 };
         if behaves >= 3 {
             // println!("behaves {:?}", behaves);
             1 
