@@ -8,7 +8,17 @@ case class Coord(x: Int, y: Int) {
       case Down(v) => Coord(x, y - v)
     }
   }
-  def distance() = Math.abs(x)+Math.abs(y)
+  def stride(dest: Coord): (Int, Int) = (sign(dest.x - x), sign(dest.y  -y))
+
+  def distance(dest: Coord = Coord(0, 0)) = Math.abs(x-dest.x)+Math.abs(y-dest.y)
+}
+
+def sign(v: Int): Int = {
+  v match {
+    case p if p > 0 => 1
+    case z if z == 0 => 0
+    case _ => -1
+  }
 }
 
 case class WireSegment(start: Coord, end: Coord) {
@@ -59,6 +69,17 @@ case class WireSegment(start: Coord, end: Coord) {
       case _ => None
     }
   }
+  def stepsTo(dest: Coord): (Int, Boolean) = {
+    val len = start.distance(end)
+    var (dx, dy) = start.stride(end)
+    var curr = start
+    var steps = 0
+    while (curr != dest && steps < len) {
+      curr = Coord(curr.x + dx, curr.y + dy)
+      steps += 1
+    }
+    (steps, curr == dest);
+  }
 }
 
 object WireSegment {
@@ -79,13 +100,21 @@ object WireSegment {
       throw new NotImplementedError("no slanting lines allowed")
     }
   }
-
   def apply(x1: Int, y1: Int, x2: Int, y2: Int): WireSegment = WireSegment(Coord(x1, y1), Coord(x2, y2))
 }
 
 case class Wire(segments: Seq[WireSegment])
 {
-  def stepsTo(coord: Coord) = 0
+  def stepsTo(dest: Coord): (Int, Boolean) = {
+    var steps = 0
+    segments.foreach { segment => 
+      val (v, found) = segment.stepsTo(dest)
+      if (found)
+        return (steps + v, true)
+      steps += v
+    }
+    (steps, false)
+  }
 }
 
 object Wires {
@@ -123,7 +152,10 @@ object Wires {
     val wire1 = toWire(parseWire(wire1spec))
     val wire2 = toWire(parseWire(wire2spec))
     crossings(wire1, wire2).map { crossing =>
-      wire1.stepsTo(crossing) + wire2.stepsTo(crossing)
+      (wire1.stepsTo(crossing), wire2.stepsTo(crossing)) match {
+        case ((s1, true), (s2, true)) => s1 + s2
+        case _ => throw new NotImplementedError("Not on both?")
+      }
     }.sorted.drop(1).head
   }
 }

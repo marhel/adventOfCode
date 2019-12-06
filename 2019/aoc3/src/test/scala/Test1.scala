@@ -36,6 +36,15 @@ class TestWires {
   @Test def fewestSteps3(): Unit = {
     assertEquals(410, Wires.fewestSteps("R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51","U98,R91,D20,R16,D67,R40,U7,R15,U6,R7"))
   }
+  @Test def stepsToOutside(): Unit = {
+    assertEquals((8 + 5, false), Wire(Seq(WireSegment(0, 0, 8, 0), WireSegment(8, 0, 8, 5))).stepsTo(Coord(1, 1)))
+  }
+  @Test def stepsToMid2(): Unit = {
+    assertEquals((8 + 3, true), Wire(Seq(WireSegment(0, 0, 8, 0), WireSegment(8, 0, 8, 5))).stepsTo(Coord(8, 3)))
+  }
+  @Test def stepsToMid1(): Unit = {
+    assertEquals((4, true), Wire(Seq(WireSegment(0, 0, 8, 0), WireSegment(8, 0, 8, 5))).stepsTo(Coord(4, 0)))
+  }
 }
 
 def assertThrows[T](lambda: () => Unit) = {
@@ -48,6 +57,26 @@ def assertThrows[T](lambda: () => Unit) = {
 }
 
 class TestWireSegment {
+  @Test def stepsTo1(): Unit = {
+    assertEquals(
+      (0, true),
+      WireSegment(0, 0, 8, 0).stepsTo(Coord(0, 0)))
+  }
+  @Test def stepsTo2(): Unit = {
+    assertEquals(
+      (1, true),
+      WireSegment(0, 0, 8, 0).stepsTo(Coord(1, 0)))
+  }
+  @Test def stepsTo3(): Unit = {
+    assertEquals(
+      (8, true),
+      WireSegment(0, 0, 8, 0).stepsTo(Coord(8, 0)))
+  }
+  @Test def stepsToOutside(): Unit = {
+    assertEquals(
+      (8, false),
+      WireSegment(0, 0, 8, 0).stepsTo(Coord(1, 1)))
+  }
   @Test def intersectsVertically1(): Unit = {
     assertEquals(
       Some(4),
@@ -116,5 +145,20 @@ class TestCoord {
   }
   @Test def moveDown(): Unit = {
     assertEquals(Coord(0, 0).move(Direction.Down(3)), Coord(0, -3))
+  }
+  @Test def stride1(): Unit = {
+    assertEquals((1,0), Coord(1, 1).stride(Coord(3, 1)))
+  }
+  @Test def stride2(): Unit = {
+    assertEquals((-1,0), Coord(3, 1).stride(Coord(1, 1)))
+  }
+  @Test def stride3(): Unit = {
+    assertEquals((0,0), Coord(1, 1).stride(Coord(1, 1)))
+  }
+  @Test def stride4(): Unit = {
+    assertEquals((0,1), Coord(1, 1).stride(Coord(1, 3)))
+  }
+  @Test def stride5(): Unit = {
+    assertEquals((0,-1), Coord(1, 3).stride(Coord(1, 1)))
   }
 }
