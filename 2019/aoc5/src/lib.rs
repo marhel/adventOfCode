@@ -2,6 +2,12 @@ const ADD: i32 = 1;
 const MUL: i32 = 2;
 const INP: i32 = 3;
 const OUT: i32 = 4;
+
+const JNZ: i32 = 5;
+const JZ: i32 = 6;
+const LES: i32 = 7;
+const EQU: i32 = 8;
+
 const HLT: i32 = 99;
 
 const POSITION: i32 = 0;
@@ -26,7 +32,11 @@ pub fn operand(v: &Vec<i32>, offset: usize, mode: i32) -> i32 {
     }
 }
 
-pub fn execute(mut v: Vec<i32>) -> (i32, Vec<i32>) {
+pub fn execute(v: Vec<i32>) -> (i32, Vec<i32>) {
+    execute_with_input(v, 0)
+}
+
+pub fn execute_with_input(mut v: Vec<i32>, input: i32) -> (i32, Vec<i32>) {
     let mut pc: usize = 0;
     let mut output: i32 = 0;
     loop {
@@ -35,7 +45,7 @@ pub fn execute(mut v: Vec<i32>) -> (i32, Vec<i32>) {
         let instruction = opcode % 100;
         let m1 = (opcode / 100) % 10;
         let m2 = (opcode / 1000) % 10;
-        let m3 = (opcode / 10000) % 10;
+        let _m3 = (opcode / 10000) % 10;
         // println!("\n  {:04}: ins {:?} ({:?}) [{:?}, {:?}, {:?}]", pc, instruction, opcode, m1, m2, m3);
 
         match instruction {
@@ -57,7 +67,7 @@ pub fn execute(mut v: Vec<i32>) -> (i32, Vec<i32>) {
             }
             INP => {
                 let dst = dst(&v, pc + 1);
-                v[dst] = 1; // hardcoded input
+                v[dst] = input;
                 // println!("{:04}: INP: 1 => {:?} ({:?})", pc, dst, v[dst]);
                 pc += 2;
             }
@@ -66,6 +76,39 @@ pub fn execute(mut v: Vec<i32>) -> (i32, Vec<i32>) {
                 println!("{:04}: OUT: {:?}", pc, output);
                 pc += 2;
             }
+            JNZ => {
+                let op1 = operand(&v, pc + 1, m1);
+                let dst = operand(&v, pc + 2, m2);
+                if op1 != 0 {
+                    pc = dst as usize;
+                } else {
+                    pc += 3;
+                }
+            }
+            JZ => {
+                let op1 = operand(&v, pc + 1, m1);
+                let dst = operand(&v, pc + 2, m2);
+                if op1 == 0 {
+                    pc = dst as usize;
+                } else {
+                    pc += 3;
+                }
+            }
+            LES => {
+                let op1 = operand(&v, pc + 1, m1);
+                let op2 = operand(&v, pc + 2, m2);
+                let dst = dst(&v, pc + 3);
+                v[dst] = if op1 < op2 {1} else {0};
+                pc += 4;
+            }
+            EQU => {
+                let op1 = operand(&v, pc + 1, m1);
+                let op2 = operand(&v, pc + 2, m2);
+                let dst = dst(&v, pc + 3);
+                v[dst] = if op1 == op2 {1} else {0};
+                pc += 4;
+            }
+
             HLT => break,
             v => panic!("Unknown opcode {:?}", v),
         }
@@ -75,7 +118,7 @@ pub fn execute(mut v: Vec<i32>) -> (i32, Vec<i32>) {
 
 #[cfg(test)]
 mod tests {
-    use crate::execute;
+    use crate::{execute, execute_with_input};
 
     #[test]
     fn ex1() {
@@ -108,10 +151,8 @@ mod tests {
     #[test]
     fn input_output() {
         let input = vec![3, 0, 4, 0, 99];
-        let output = vec![1, 0, 4, 0, 99];
-        let res = execute(input);
-        assert_eq!(res.0, 1);
-        assert_eq!(res.1, output);
+        let res = execute_with_input(input, 33);
+        assert_eq!(res.0, 33);
     }
 
     #[test]
@@ -119,6 +160,62 @@ mod tests {
         let input = vec![1, 1, 1, 4, 99, 5, 6, 0, 99];
         let output = vec![30, 1, 1, 4, 2, 5, 6, 0, 99];
         assert_eq!(execute(input).1, output);
+    }
+
+    #[test]
+    fn not_equal_to_8() {
+        let input = vec![
+            3,9,8,9,10,9,4,9,99,-1,8
+        ];
+
+        let output = execute_with_input(input, 5);
+        assert_eq!(output.0, 0);
+    }
+
+    #[test]
+    fn equal_to_8() {
+        let input = vec![
+            3,9,8,9,10,9,4,9,99,-1,8
+        ];
+
+        let output = execute_with_input(input, 8);
+        assert_eq!(output.0, 1);
+    }
+    #[test]
+    fn less_than_8() {
+        let input = vec![
+            3,9,7,9,10,9,4,9,99,-1,8
+        ];
+
+        let output = execute_with_input(input, 5);
+        assert_eq!(output.0, 1);
+    }
+    #[test]
+    fn not_less_than_8() {
+        let input = vec![
+            3,9,7,9,10,9,4,9,99,-1,8
+        ];
+
+        let output = execute_with_input(input, 55);
+        assert_eq!(output.0, 0);
+    }
+    #[test]
+    fn equal_to_8_imm() {
+        let input = vec![
+            3,3,1108,-1,8,3,4,3,99
+        ];
+
+        let output = execute_with_input(input, 8);
+        assert_eq!(output.0, 1);
+    }
+    #[test]
+    fn not_equal_to_8_imm() {
+        let input = vec![
+            3,3,1108,-1,8,3,4,3,99
+        ];
+
+        let output = execute_with_input(input, 9);
+        assert_eq!(output.0, 0);
     }
 
     #[test]
@@ -164,13 +261,13 @@ mod tests {
             224, 674, 1001, 223, 1, 223, 4, 223, 99, 226,
         ];
 
-        let output = execute(input);
+        let output = execute_with_input(input, 1);
         assert_eq!(output.0, 7566643);
     }
 
     #[test]
     fn part2() {
-        let _original = vec![
+        let input = vec![
             3, 225, 1, 225, 6, 6, 1100, 1, 238, 225, 104, 0, 1002, 148, 28, 224, 1001, 224, -672,
             224, 4, 224, 1002, 223, 8, 223, 101, 3, 224, 224, 1, 224, 223, 223, 1102, 8, 21, 225,
             1102, 13, 10, 225, 1102, 21, 10, 225, 1102, 6, 14, 225, 1102, 94, 17, 225, 1, 40, 173,
@@ -210,7 +307,8 @@ mod tests {
             223, 1005, 224, 659, 1001, 223, 1, 223, 1008, 226, 226, 224, 1002, 223, 2, 223, 1006,
             224, 674, 1001, 223, 1, 223, 4, 223, 99, 226,
         ];
-        let answer = 0;
-        assert_eq!(answer, 0);
+        let output = execute_with_input(input, 5);
+
+        assert_eq!(output.0, 0);
     }
 }
