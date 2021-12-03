@@ -8,7 +8,7 @@ defmodule Aoc2Part2 do
 
   def parse(line) do
     [direction, amount] = String.split(String.trim(line), " ")
-    navigate(direction, Integer.parse(amount) |> elem(0))
+    navigate(direction, String.to_integer(amount))
   end
 
   def solve(name) do
