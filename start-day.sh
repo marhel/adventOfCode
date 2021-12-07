@@ -9,6 +9,7 @@ if [ ! -d aoc$day ]; then
     echo "Creating aoc$day folder ..."
     mkdir aoc$day
 fi
+FOLDER="$PWD/$(dirname $0)"
 cd aoc$day
 
 function checked_download() {
@@ -43,7 +44,6 @@ if [ ! -f $DAYHTML ]; then
 fi
 
 if [ ! -f simple.txt ] && [ -f $DAYHTML ]; then
-    FOLDER=`dirname $0`
     perl -MHTML::Entities $FOLDER/simple.pl < $DAYHTML > simple.txt
     if [ -f $DAYHTML ]; then
         rm $DAYHTML
