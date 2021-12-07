@@ -24,9 +24,9 @@ defmodule Aoc7 do
 
   def solve2(name) do
     nums = File.read!(name) |> parse
-    {min, max} = nums |> Enum.min_max
+    {min, max} = nums |> Enum.min_max()
     # yes, this is brute force, so what? Live with it.
-    best = min .. max |> Enum.min_by(fn i -> fit2(nums, i) end)
+    best = min..max |> Enum.min_by(fn i -> fit2(nums, i) end)
     nums |> fit2(best)
   end
 end

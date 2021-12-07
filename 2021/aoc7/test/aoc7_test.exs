@@ -45,6 +45,6 @@ defmodule Aoc7Test do
   end
 
   test "solve real case, part 2" do
-    assert Aoc7.solve2("input.txt") == 340_056
+    assert Aoc7.solve2("input.txt") == 96_592_275
   end
 end
