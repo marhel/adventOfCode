@@ -1,0 +1,27 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run mix tests",
+            "type": "shell",
+            "command": "mix test",
+            "group": "test",
+            "presentation": {
+              "reveal": "always",
+              "panel": "shared"
+            }
+        },
+        {
+            "label": "Format (with mix)",
+            "type": "shell",
+            "command": "mix format",
+            "group": "build",
+            "presentation": {
+              "reveal": "always",
+              "panel": "shared"
+            }
+        }
+    ]
+}
