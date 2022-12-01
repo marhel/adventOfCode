@@ -1,7 +1,7 @@
 : ${AOC_SESSION?"You need to set AOC_SESSION to your actual AoC 'session' cookie"}
 # exit even if sourced
 if [ "$AOC_SESSION" == "" ]; then return; fi
-curr_day=`date -j +%O-e`
+curr_day=`date +%-d`
 year=`date +%Y`
 day=${1:-$curr_day}
 echo "Advent of Code - Day $day"
