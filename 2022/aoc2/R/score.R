@@ -1,3 +1,19 @@
+library(hash)
+
+itemscore <- hash(c("A", "B", "C", "X", "Y", "Z"), c(1:3, 1:3))
+gamescore <- hash(c("X", "Y", "Z"), list(c(3,0,6), c(6,3,0), c(0,6,3)))
+
+# not sure using lookup tables is "better"
+score_alt <- function(rule) {
+	# A = Rock, B = Paper, C = Scissors
+	# X = Rock, Y = Paper, Z = Scissors
+
+	comp <- strsplit(rule, " ") %>% unlist
+	they <- itemscore[[comp[1]]]
+	me <- itemscore[[comp[2]]]
+	gamescore[[comp[2]]][they] + me
+}
+
 score <- function(rule) {
 	# A = Rock, B = Paper, C = Scissors
 	# X = Rock, Y = Paper, Z = Scissors
