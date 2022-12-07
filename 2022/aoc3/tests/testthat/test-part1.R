@@ -1,6 +1,6 @@
 test_that("part1 works", {
   expect_equal(part1("simple.txt"), 157)
-  expect_equal(part1("input.txt"), 0)
+  expect_equal(part1("input.txt"), 8123)
 })
 
 test_that("common works", {
