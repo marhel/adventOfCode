@@ -1,10 +1,10 @@
 Grp ← ↘ 1 ⊜□ ¬ ∊, ":;," °□
 Num ← ⋕ ⊢
 Second ← ⊢ ↻ 1
-Parse ← ([
-  +12 ⊗ : {"red" "green" "blue"}
+Parse ← (
   ⊃Second Num ⊜□ ¬ = @\s . °□
-])
+  ⊟ +12 ⊗ : {"red" "green" "blue"}
+)
 Run ← [/× ≤ ⊃⊢ Second ⍉ ∵Parse]
 PartOne ← Run Grp
 
@@ -15,10 +15,10 @@ PartOne ← Run Grp
 # Grp = drop 1 partition box not member, ":;," unbox
 # Num = parse first 
 # Second = first rotate 1
-# Parse = ([
-#  add 12 indexof flip {"red" "green" "blue"} 
+# Parse = (
 #  fork Second Num partition box not equals @\s duplicate unbox
-# ])
+#  couple add 12 indexof flip {"red" "green" "blue"} 
+# )
 # Run = [reduce multiply <= fork first Second transpose each Parse]
 # PartOne = Run Grp
 
