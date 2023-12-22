@@ -1,11 +1,32 @@
+Matching ← /+ ∊ ⊃↙ ↘ : ↘ 1 ⋕ regex "\\d+" :
+.&fras "input.txt"
+
+# Part 1
 Points ← ⊂ 0 ⁿ :2 ⇡ 10
-Score ← ⊏ : Points /+ ∊ ⊃↙ ↘ : ↘ 1 ⋕ regex "\\d+" :
+Score ← ⊏ : Points Matching
+&s /+ ∵Score 10 ⊜□ ≠ @\n .
 
-&fras "input.txt"
-/+ ∵Score 10 ⊜□ ≠ @\n .
+# Part 2
+⧻ . ∵Matching 10 ⊜□ ≠ @\n .
+N ←
+Dist ← +1 ⊙(+ ↻ ¯ +1 ⊙(⬚0 ↙ N ↯ : ⊙⊡ ⊡)) .. ⊙⊙⊙,,,
+/+ ;:; ⍥Dist N 0 ↯ N 1
 
+# Matching = reduce add member fork take drop flip drop 1 parse regex "\\d+" flip
+# duplicate &fras "input.txt"
+
+# Part 1
 # Points = join 0 power flip 2 range 10
-# Score = select : Points reduce add member fork take drop flip drop 1 parse regex "\\d+" flip
+# Score = select : Points Matching
+# show reduce add each Score 5 box != @\n duplicate
+
+# Part 2
+# length duplicate each Matching 10 partition box != @\n duplicate
+# N = 
+# Dist = add 1 dip (add rotate neg +1 dip (fill 0 take N reshape flip dip pick pick)) .. dipdipdip,,,
+# reshape N 1
+
+# reduce add pop flip pop repeat Dist N 0
 
 # &fras "input.txt"
 # reduce add each Score 10 partition box != @\n duplicate
