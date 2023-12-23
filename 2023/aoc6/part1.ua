@@ -9,7 +9,7 @@ ParseBy!(♭ ⋕ regex "\\d+")
 # Part 2
 ParseBy!(□ regex "\\d+")
 ∵(⋕ ⊐/⊂ ♭)
-⊢ ∵Ways ⊃↙ ↘ 1
+Ways °⊟
 
 # Ways = reduce add > flip multiply reverse duplicate range +1 ?
 # . &fras $ input.txt
@@ -22,4 +22,4 @@ ParseBy!(□ regex "\\d+")
 # # Part 2
 # ParseBy!(box regex "\\d+")
 # each (parse unpack reduce join deshape)
-# first each Ways fork take drop 1
+# Ways un couple
