@@ -49,7 +49,11 @@ if [ ! -f $DAYHTML ]; then
 fi
 
 if [ ! -f simple.txt ] && [ -f $DAYHTML ]; then
-    perl -MHTML::Entities $FOLDER/simple.pl < $DAYHTML > simple.txt
+    AOC_SAMPLE_INDEX=0 perl -MHTML::Entities $FOLDER/simple.pl < $DAYHTML > simple.txt
+    AOC_SAMPLE_INDEX=1 perl -MHTML::Entities $FOLDER/simple.pl < $DAYHTML > simple2.txt
+    AOC_SAMPLE_INDEX=2 perl -MHTML::Entities $FOLDER/simple.pl < $DAYHTML > simple3.txt
+    AOC_SAMPLE_INDEX=3 perl -MHTML::Entities $FOLDER/simple.pl < $DAYHTML > simple4.txt
+    AOC_SAMPLE_INDEX=4 perl -MHTML::Entities $FOLDER/simple.pl < $DAYHTML > simple5.txt
     if [ -f $DAYHTML ]; then
         rm $DAYHTML
     fi
@@ -60,6 +64,16 @@ if [ -f simple.txt ]; then
     cat simple.txt
     echo ""
 fi
+
+for i in $(seq 1 5); do
+    if [ -s simple$i.txt ]; then
+        echo "simple$i.txt (full):"
+        cat simple$i.txt
+        echo ""
+    elif [ -f simple$i.txt ]; then
+        rm simple$i.txt
+    fi
+done
 
 if [ -f input.txt ]; then
     echo "input.txt (truncated):"
