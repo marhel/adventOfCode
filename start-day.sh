@@ -3,6 +3,11 @@
 if [ "$AOC_SESSION" == "" ]; then return; fi
 curr_day=`date +%-d`
 year=`date +%Y`
+month=`date +%m`
+if [ $month -ne "12" ]; then
+    year=$((year-1))
+fi
+
 day=${1:-$curr_day}
 echo "Advent of Code - Day $day"
 if [ ! -d aoc$day ]; then
