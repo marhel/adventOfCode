@@ -1,16 +1,11 @@
 F! = first where rows (/* ^1 repeat first 3)
 Scan = (
     flip dip (+ 1)
-    dip (
-      rotate 1 flip join flip first over
-      flip dip (
-        pick dip.
-      )
-    )
+    dip (flip dip (pick dip.) rotate 1 flip join flip first over)
     flip
 )
 
-&fras $ simple2.txt
+&fras $ input.txt
 partition box != @\n .
 fork drop (indexof : "LR" unbox first take) 1
 rows (regex "[A-Z]{3}")
@@ -18,7 +13,7 @@ F!(= "ZZZ") .
 ZI = 
 F!(= "AAA") .
 AI = 
-reshape join flip 3 div 3 length . classify deshape
+reshape [neg 1 3] classify deshape
 ..
 bracket (first pick ZI) (first pick AI)
 ZZZ=
