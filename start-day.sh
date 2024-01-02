@@ -48,32 +48,25 @@ if [ ! -f $DAYHTML ]; then
     checked_download $DAYHTML $BASE_URL
 fi
 
-if [ ! -f simple.txt ] && [ -f $DAYHTML ]; then
-    AOC_SAMPLE_INDEX=0 perl -MHTML::Entities $FOLDER/simple.pl < $DAYHTML > simple.txt
-    AOC_SAMPLE_INDEX=1 perl -MHTML::Entities $FOLDER/simple.pl < $DAYHTML > simple2.txt
-    AOC_SAMPLE_INDEX=2 perl -MHTML::Entities $FOLDER/simple.pl < $DAYHTML > simple3.txt
-    AOC_SAMPLE_INDEX=3 perl -MHTML::Entities $FOLDER/simple.pl < $DAYHTML > simple4.txt
-    AOC_SAMPLE_INDEX=4 perl -MHTML::Entities $FOLDER/simple.pl < $DAYHTML > simple5.txt
+if [ -f $DAYHTML ]; then
+    for i in $(seq 0 20); do
+        SIMPLE="simple$((i+1)).txt"
+        if [ "$i" == "0" ]; then SIMPLE="simple.txt"; fi
+        AOC_SAMPLE_INDEX=$i perl -MHTML::Entities $FOLDER/simple.pl < $DAYHTML > $SIMPLE
+        if [ -s $SIMPLE ]; then
+            echo "$SIMPLE (full):"
+            cat $SIMPLE
+            echo ""
+        elif [ -f $SIMPLE ]; then
+            rm $SIMPLE
+            break
+        fi
+    done
+
     if [ -f $DAYHTML ]; then
         rm $DAYHTML
     fi
 fi
-
-if [ -f simple.txt ]; then
-    echo "simple.txt (full):"
-    cat simple.txt
-    echo ""
-fi
-
-for i in $(seq 1 5); do
-    if [ -s simple$i.txt ]; then
-        echo "simple$i.txt (full):"
-        cat simple$i.txt
-        echo ""
-    elif [ -f simple$i.txt ]; then
-        rm simple$i.txt
-    fi
-done
 
 if [ -f input.txt ]; then
     echo "input.txt (truncated):"
